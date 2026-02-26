@@ -1,15 +1,33 @@
 package cube
 
+import "fmt"
+
 type Side struct {
 	Index  int
 	Colors []string
 }
+
+func (side *Side) PrintSide(cubeSize int) {
+	for i := range cubeSize {
+		for j := (i * 3); j < (i+1)*cubeSize; j++ {
+			fmt.Printf("%s ", side.Colors[j])
+		}
+		fmt.Print("\n")
+	}
+}
+
 type CubeModel struct {
 	Sides []Side
 }
 
 var moves = map[string]func(int, *CubeModel){
-	"R": func(r int, cube *CubeModel) {},
+	"R": func(r int, cube *CubeModel) {
+		sidesOrder := []int8{0, 1, 5, 3, 0}
+		for i := range 4 {
+			cube.Sides[sidesOrder[i]].Colors[2], cube.Sides[sidesOrder[i+1]].Colors[2] = cube.Sides[sidesOrder[i+1]].Colors[2], cube.Sides[sidesOrder[i]].Colors[2]
+			//add the rest of sides and rotating right side by 90 deg
+		}
+	},
 	"L": func(r int, cube *CubeModel) {},
 	"U": func(r int, cube *CubeModel) {},
 	"D": func(r int, cube *CubeModel) {},
@@ -37,7 +55,7 @@ func (cube *CubeModel) printCube() {
 }
 func CreateCube(n int) CubeModel {
 	var mainCube CubeModel
-	colors := []string{"WHITE", "ORANGE", "GREEN", "RED", "BLUE", "YELLOW"}
+	colors := []string{"W", "O", "G", "R", "B", "Y"}
 	for i, color := range colors {
 		var sideColors = []string{}
 		for j := 0; j < n*n; j++ {
